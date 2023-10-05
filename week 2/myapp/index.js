@@ -8,7 +8,7 @@ const { isNameValid, isEmailValid, isPasswordValid } = require('./utils')
 const app = express()
 app.use(express.json());
 app.use(cors())
-const port = 3000
+
 
 
 app.post('/user', (req, res) => {
@@ -97,6 +97,7 @@ app.get('/', (req, res) => {
 })
 
 // Start the server and listen on the specified port
+const port = process.env.PORT || 3000
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
