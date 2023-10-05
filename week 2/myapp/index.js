@@ -12,12 +12,14 @@ const port = 3000
 
 
 app.post('/user', (req, res) => {
-  console.log(req.body);
-  console.log('type ', req.is('application/json'));
+  // console.log(req.body);
+  if (!req.is('application/json')) {
+    res.status(400).send('content type should be application/json')
+    return;
+  }
   const requestDate = req.header('Date');
-  console.log('data ', requestDate);
+  // console.log('data ', requestDate);
 
-  const q = 'INSERT INTO user(name, email, password) VALUES (?)'
   const values = [
     req.body.name,
     req.body.email,
@@ -29,24 +31,62 @@ app.post('/user', (req, res) => {
     return;
   }
 
+  const q = 'INSERT INTO user(name, email, password) VALUES (?)'
   connection.query(
     q, [values], (err, results, fields) => {
       if (err) {
-        res.status(409).send('Email already exists')
+        console.log(err)
+        if (err.code === 'ER_DUP_ENTRY') {
+          res.status(409).send('Email already exists')
+          console.log("Email already exists")
+        } else {
+          res.status(400).send('Some error occurred')
+          console.log("Some error occurred")
+        }
+        return;
       }
-      else {
-        res.status(200).send({
-          name: values[0],
-          email: values[1],
-          password: values[2]
-        })
+
+      const response = {
+        data: {
+          user: { id: results['insertId'], name: values[0], email: values[1] },
+          "request-date": requestDate
+        }
       }
+      console.log(response)
+      res.status(200).send(response)
     }
   );
-
 })
 
+// get user by id
+app.get('/user', (req, res) => {
+  const { id } = req.query;
+  const q = 'SELECT id, name, email FROM user WHERE id = ?'
+  connection.query(
+    q, [id], (err, results, fields) => {
+      if (err) {
+        console.log(err)
+        res.status(400).send('Some error occurred')
+        console.log("Some error occurred")
+      }
 
+      if (!results[0]) {
+        res.status(403).send('User not found')
+        console.log("User not found")
+        return;
+      }
+
+      const userObj = results[0]
+      const response = {
+        data: {
+          user: userObj,
+          "request-date": new Date().toUTCString()
+        }
+      }
+      res.status(200).send(response)
+    }
+  )
+})
 
 // Define a route for the healthcheck endpoint
 app.get('/healthcheck', (req, res) => {
