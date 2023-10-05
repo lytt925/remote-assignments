@@ -12,13 +12,11 @@ const port = 3000
 
 
 app.post('/user', (req, res) => {
-  // console.log(req.body);
   if (!req.is('application/json')) {
-    res.status(400).send('content type should be application/json')
+    res.status(400).send({ error: 'content type should be application/json' })
     return;
   }
   const requestDate = req.header('Date');
-  // console.log('data ', requestDate);
 
   const values = [
     req.body.name,
@@ -27,7 +25,7 @@ app.post('/user', (req, res) => {
   ]
 
   if (!isNameValid(values[0]) || !isEmailValid(values[1]) || !isPasswordValid(values[2])) {
-    res.status(400).send('Invalid input')
+    res.status(400).send({ error: 'Invalid input' })
     return;
   }
 
@@ -37,10 +35,10 @@ app.post('/user', (req, res) => {
       if (err) {
         console.log(err)
         if (err.code === 'ER_DUP_ENTRY') {
-          res.status(409).send('Email already exists')
+          res.status(409).send({ error: 'Email already exists' })
           console.log("Email already exists")
         } else {
-          res.status(400).send('Some error occurred')
+          res.status(400).send({ error: 'Some error occurred' })
           console.log("Some error occurred")
         }
         return;
@@ -66,12 +64,12 @@ app.get('/user', (req, res) => {
     q, [id], (err, results, fields) => {
       if (err) {
         console.log(err)
-        res.status(400).send('Some error occurred')
+        res.status(400).send({ error: 'Some error occurred' })
         console.log("Some error occurred")
       }
 
       if (!results[0]) {
-        res.status(403).send('User not found')
+        res.status(403).send({ error: 'User not found' })
         console.log("User not found")
         return;
       }
