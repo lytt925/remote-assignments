@@ -1,15 +1,12 @@
-#!/usr/bin/env node
+#!/usr/local/bin/node
 const express = require('express')
-const cors = require('cors')
+const bcrypt = require("bcrypt")
 const { connection } = require('./db')
 const { isNameValid, isEmailValid, isPasswordValid } = require('./utils')
 
 // Create a new express app
 const app = express()
 app.use(express.json());
-app.use(cors())
-
-
 
 app.post('/user', (req, res) => {
   if (!req.is('application/json')) {
@@ -17,6 +14,7 @@ app.post('/user', (req, res) => {
     return;
   }
   const requestDate = req.header('Date');
+
 
   const values = [
     req.body.name,
@@ -28,6 +26,13 @@ app.post('/user', (req, res) => {
     res.status(400).send({ error: 'Invalid input' })
     return;
   }
+
+  bcrypt.hash(req.body.password, 10, function (err, hash) {
+    if (err) throw err;
+    values[2] = hash;
+  });
+
+  console.log(values)
 
   const q = 'INSERT INTO user(name, email, password) VALUES (?)'
   connection.query(
