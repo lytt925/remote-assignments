@@ -1,0 +1,14 @@
+# Remote Assignments
+- IP Address: http://44.217.27.217/
+- Database name: assignments
+- Change summary:
+    - Backend service:
+        - [v] setup healthcheck api
+        - [v] deploy service to aws ec2
+        - [v] start a servie by using a .service file to run in background
+        - [v] createa a mysql assignment database and a user table with specified schema.
+        - [v] use mysqldump to backup mysql database (see ./backup.sql)
+        - [v] implement post and get apis.
+        - [v] deploy without port number
+        - [v] use dotenv to save database password
+        - [v] use bcrypt to save user password
