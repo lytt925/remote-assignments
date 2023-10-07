@@ -16,7 +16,7 @@ app.post('/user', (req, res) => {
   const requestDate = req.header('Date');
 
 
-  const values = [
+  var values = [
     req.body.name,
     req.body.email,
     req.body.password
@@ -30,35 +30,32 @@ app.post('/user', (req, res) => {
   bcrypt.hash(req.body.password, 10, function (err, hash) {
     if (err) throw err;
     values[2] = hash;
+    const q = 'INSERT INTO user(name, email, password) VALUES (?)'
+    connection.query(
+      q, [values], (err, results, fields) => {
+        if (err) {
+          console.log(err)
+          if (err.code === 'ER_DUP_ENTRY') {
+            res.status(409).send({ error: 'Email already exists' })
+            console.log("Email already exists")
+          } else {
+            res.status(400).send({ error: 'Some error occurred' })
+            console.log("Some error occurred")
+          }
+          return;
+        }
+
+        const response = {
+          data: {
+            user: { id: results['insertId'], name: values[0], email: values[1] },
+            "request-date": requestDate
+          }
+        }
+        console.log(response)
+        res.status(200).send(response)
+      }
+    );
   });
-
-  console.log(values)
-
-  const q = 'INSERT INTO user(name, email, password) VALUES (?)'
-  connection.query(
-    q, [values], (err, results, fields) => {
-      if (err) {
-        console.log(err)
-        if (err.code === 'ER_DUP_ENTRY') {
-          res.status(409).send({ error: 'Email already exists' })
-          console.log("Email already exists")
-        } else {
-          res.status(400).send({ error: 'Some error occurred' })
-          console.log("Some error occurred")
-        }
-        return;
-      }
-
-      const response = {
-        data: {
-          user: { id: results['insertId'], name: values[0], email: values[1] },
-          "request-date": requestDate
-        }
-      }
-      console.log(response)
-      res.status(200).send(response)
-    }
-  );
 })
 
 // get user by id
