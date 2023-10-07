@@ -2,13 +2,12 @@
 Description=My app
 
 [Service]
-ExecStart=/var/www/myapp/app.js
-Restart=always
-User=nobody
-
+ExecStart=/var/www/myapp/myapp.sh
+LimitNOFILE=4096
+IgnoreSIGPIPE=false
+KillMode=process
 # Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
-Group=nogroup
-Environment=PATH=/usr/bin:/usr/local/bin
+User=root
 Environment=NODE_ENV=production
 WorkingDirectory=/var/www/myapp
 

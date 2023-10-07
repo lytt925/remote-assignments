@@ -1,13 +1,26 @@
 const mysql = require('mysql2');
 require('dotenv').config() //config will read your .env file, parse the contents, assign it to process.env,
 
-// create the connection to database
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
   host: 'appworks-mysql-1.cwsergwzdswh.us-east-1.rds.amazonaws.com',
   user: 'admin',
-  password: process.env.MYSQL_PWD,
   database: 'assignment',
+  password: process.env.MYSQL_PWD,
   port: '3306'
 });
 
-exports.connection = connection;
+
+// Attempt to catch disconnects 
+pool.on('connection', function (connection) {
+  console.log('DB Connection established');
+
+  connection.on('error', function (err) {
+    console.error(new Date(), 'MySQL error', err.code);
+  });
+  connection.on('close', function (err) {
+    console.error(new Date(), 'MySQL close', err);
+  });
+
+});
+
+exports.connection = pool;
