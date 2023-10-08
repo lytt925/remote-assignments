@@ -8,7 +8,7 @@ const { isNameValid, isEmailValid, isPasswordValid } = require('./utils')
 const app = express()
 app.use(express.json());
 
-app.post('/user', (req, res) => {
+app.post('/users', (req, res) => {
   if (!req.is('application/json')) {
     res.status(400).send({ error: 'content type should be application/json' })
     return;
@@ -59,7 +59,7 @@ app.post('/user', (req, res) => {
 })
 
 // get user by id
-app.get('/user', (req, res) => {
+app.get('/users', (req, res) => {
   const { id } = req.query;
   const q = 'SELECT id, name, email FROM user WHERE id = ?'
   connection.query(
