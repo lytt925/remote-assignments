@@ -13,7 +13,7 @@ app.post('/users', (req, res) => {
     res.status(400).send({ error: 'content type should be application/json' })
     return;
   }
-  const requestDate = req.header('Date');
+  const requestDate = req.header('Request-Date');
 
 
   var values = [
@@ -80,7 +80,7 @@ app.get('/users', (req, res) => {
       const response = {
         data: {
           user: userObj,
-          "request-date": new Date().toUTCString()
+          "request-date": req.header('Request-Date')
         }
       }
       res.status(200).send(response)
