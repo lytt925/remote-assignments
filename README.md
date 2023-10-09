@@ -1,12 +1,14 @@
-# remote-assignments
-Author: Yen-Ting Li
-## Description
-This is the remote-assignments for week 1
-
-## Enviroment requirements
-- Node.js must be installed
-
-## How to use
-- change working directory into this folder. 
-- enter `npm install` to install the dependent package
-- enter `time node requestAsync.js` or `time node requestSync.js` to see the difference between how synchronous and asychronous functions works
+# Remote Assignments
+- IP Address: http://44.217.27.217/
+- Database name: assignments
+- Change summary:
+    - Backend service:
+        - [v] setup healthcheck api
+        - [v] deploy service to aws ec2
+        - [v] start a servie by using a .service file to run in background
+        - [v] createa a mysql assignment database and a user table with specified schema.
+        - [v] use mysqldump to backup mysql database (see ./backup.sql)
+        - [v] implement post and get apis.
+        - [v] deploy without port number
+        - [v] use dotenv to save database password
+        - [v] use bcrypt to save user password

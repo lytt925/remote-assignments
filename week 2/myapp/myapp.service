@@ -1,0 +1,15 @@
+[Unit]
+Description=My app
+
+[Service]
+ExecStart=/var/www/myapp/myapp.sh
+LimitNOFILE=4096
+IgnoreSIGPIPE=false
+KillMode=process
+# Note Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+User=root
+Environment=NODE_ENV=production
+WorkingDirectory=/var/www/myapp
+
+[Install]
+WantedBy=multi-user.target
